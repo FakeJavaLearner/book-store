@@ -1,33 +1,41 @@
 package bookstore.app.controller;
 
-import bookstore.app.model.Book;
-import bookstore.app.repository.BookRepository;
+import bookstore.app.dto.BookDto;
+import bookstore.app.dto.CreateBookRequestDto;
+import bookstore.app.servise.BookService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//This controller will be deleted. The controller has been created only for tests.
 @RestController
 @RequestMapping("/books")
 public class BookController {
-    private BookRepository bookRepository;
+    private BookService bookService;
 
     @Autowired
-    public BookController(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @GetMapping
-    public List<Book> getAll() {
-        return bookRepository.findAll();
+    public List<BookDto> getAll() {
+        HttpStatus status = HttpStatus.OK;
+        return bookService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public BookDto getBookById(@PathVariable Long id) {
+        return bookService.getById(id);
     }
 
     @PostMapping
-    public void createBook(@RequestBody Book book) {
-        bookRepository.save(book);
+    public void createBook(@RequestBody CreateBookRequestDto createBookRequestDto) {
+        bookService.createBook(createBookRequestDto);
     }
 }
